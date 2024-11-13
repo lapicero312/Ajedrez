@@ -7,6 +7,10 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class AjedrezGUI extends JFrame {
     private JPanel tableroPanel;
@@ -118,9 +122,18 @@ public class AjedrezGUI extends JFrame {
                     // Obtiene la imagen correspondiente a la pieza
                     String nombreArchivo = obtenerNombreArchivoImagen(pieza);
                     if (nombreArchivo != null) {
-                        // Cargar imagen como recurso
-                        ImageIcon icono = new ImageIcon(getClass().getResource("/imagenes/" + nombreArchivo));
-                        button.setIcon(new ImageIcon(icono.getImage().getScaledInstance(60, 60, Image.SCALE_SMOOTH)));
+                        String directorioTrabajo = System.getProperty("user.dir");
+                        Path rutaCompleta = Paths.get(directorioTrabajo, "src", "imagenes", nombreArchivo);
+                        URL url;
+
+                        try {
+                            url = new URL("file://" + rutaCompleta.toAbsolutePath());
+                            ImageIcon icono = new ImageIcon(url);
+
+                            button.setIcon(new ImageIcon(icono.getImage().getScaledInstance(60, 60, Image.SCALE_SMOOTH)));
+                        } catch (MalformedURLException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
 
